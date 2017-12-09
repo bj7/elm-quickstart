@@ -1,62 +1,48 @@
-module Main exposing (..)
-
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Utils
-
+import Html exposing (Html, button, div, text)
+import Html.Attributes exposing (style)
+import Html.Events exposing (onClick)
 
 main : Program Never Model Msg
-main =
-    Html.program
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
-
-
+main = 
+    Html.beginnerProgram { model = model, view = view, update = update }
 
 -- Model
 
+type alias Model = Int
 
-type alias Model =
-    { name : String }
-
-
-init : ( Model, Cmd Msg )
-init =
-    Model "world" ! []
-
-
+model : Model
+model = 
+    0
 
 -- Update
 
+type Msg = Increment | Decrement | Reset
 
-type Msg
-    = NoOp
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Model
 update msg model =
     case msg of
-        NoOp ->
-            model ! []
+        Increment ->
+            model + 1
 
-
-
+        Decrement ->
+            model - 1    
+        
+        Reset ->
+            0
 -- View
 
+myStyle : Html.Attribute msg
+myStyle = 
+    style [
+        ("display", "inline")
+    ]
 
-view : Model -> Html Msg
+view: Model -> Html Msg
 view model =
-    h1 []
-        [ text ("Hello " ++ (Utils.capitalize model.name)) ]
-
-
-
--- Subscriptions
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
+    div []
+        [
+            button [onClick Decrement, myStyle][text "-"],
+            div [myStyle] [text (toString model)],
+            button [onClick Increment, myStyle] [text "+"],
+            button [onClick Reset][text "Reset"]
+        ]
